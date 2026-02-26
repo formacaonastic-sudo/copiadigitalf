@@ -2,239 +2,169 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<title>Caderno Digital de Escrita</title>
-
+<title>Caderno Digital de Cópia</title>
 <style>
-body {
-    margin: 0;
-    font-family: "Comic Sans MS", Arial, sans-serif;
-    background: linear-gradient(180deg,#eef3ff,#f8faff);
-    display: flex;
-    justify-content: center;
-    padding: 30px;
-}
-
-.caderno {
-    background: white;
-    width: 850px;
-    padding: 35px 45px;
-    border-radius: 18px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
-
-h1 { text-align: center; color: #444; margin-bottom: 25px; }
-label { font-size: 20px; }
-
-input {
-    width: 100%;
-    font-size: 20px;
-    padding: 10px;
-    margin: 8px 0 20px 0;
-    border-radius: 8px;
-    border: 2px solid #d6dcff;
-    box-sizing: border-box;
-}
-
-.pagina-container {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.pagina-container .numero-pagina {
-    position: absolute;
-    top: 5px;
-    right: 15px;
-    font-size: 16px;
-    color: #777;
-}
-
-/* AREA DE ESCRITA */
-textarea {
-    box-sizing: border-box;
-    width: 100%;
-    height: 420px;
-    font-size: 28px;       /* LETRA GRANDE */
-    line-height: 54px;     /* LINHA AJUSTADA PARA ENCAIXAR */
-    padding: 12px 15px 12px 60px; /* margem esquerda */
-    border-radius: 10px;
-    border: 2px solid #e1e6ff;
-    outline: none;
-    resize: none;
-    margin-bottom: 20px;
-
-    /* LINHAS DUPLAS + PONTILHADO AJUSTADAS PARA FONT 28px */
-    background-image:
-        /* margem vermelha portuguesa */
-        linear-gradient(to right, transparent 55px, #ff6b6b 56px, transparent 57px),
-
-        /* linhas duplas horizontais */
-        repeating-linear-gradient(
-            to bottom,
-            white 0px,
-            white 32px,
-            #b7c5ff 32px,
-            white 34px,
-            white 52px,
-            #b7c5ff 52px,
-            white 54px
-        ),
-
-        /* pontilhado no meio */
-        repeating-linear-gradient(
-            to bottom,
-            transparent 0px,
-            transparent 32px,
-            #b7c5ff 33px 33px,
-            transparent 34px,
-            transparent 52px,
-            #b7c5ff 53px 53px,
-            transparent 54px
-        );
-}
-
-textarea:focus { border-color: #9aa8ff; }
-
-button {
-    margin-top: 10px;
-    font-size: 18px;
-    padding: 12px 22px;
-    border: none;
-    border-radius: 10px;
-    background-color: #7c8cff;
-    color: white;
-    cursor: pointer;
-}
-
-button:hover { background-color: #6574e6; }
-
-@media print {
-    body { background: white; padding: 0; }
-    button { display: none; }
-    .caderno { box-shadow: none; border-radius: 0; width: 100%; }
-    .numero-pagina { display: none; }
-}
+body { margin:0; font-family:"Comic Sans MS",Arial,sans-serif; background:linear-gradient(180deg,#eef3ff,#f8faff); display:flex; justify-content:center; padding:30px; }
+.caderno { background:white; width:850px; padding:35px 45px; border-radius:18px; box-shadow:0 8px 20px rgba(0,0,0,0.12); }
+h1{text-align:center;color:#444;margin-bottom:25px;}
+label{font-size:20px;}
+input{width:100%; font-size:20px; padding:10px; margin:8px 0 20px 0; border-radius:8px; border:2px solid #d6dcff; box-sizing:border-box;}
+.pagina-container{position:relative; margin-bottom:20px;}
+.pagina-container .numero-pagina{position:absolute; top:5px; right:15px; font-size:16px; color:#777;}
+.modelo{width:100%; font-family:Arial,sans-serif; font-size:28px; line-height:54px; padding:12px 15px 12px 60px; border-radius:10px; border:2px solid #b7c5ff; background-color:#f0f4ff; margin-bottom:10px; box-sizing:border-box; white-space:pre-line; overflow:hidden;}
+.rotulo-copia{font-size:22px; font-weight:bold; margin-bottom:5px;}
+.copia{box-sizing:border-box; width:100%; min-height:250px; font-size:28px; line-height:54px; padding:12px 15px 12px 60px; border-radius:10px; border:2px solid #e1e6ff; outline:none; resize:none; margin-bottom:10px; background-image:linear-gradient(to right,transparent 55px,#ff6b6b 56px,transparent 57px),repeating-linear-gradient(to bottom,white 0px,white 32px,#b7c5ff 32px,white 34px,white 52px,#b7c5ff 52px,white 54px),repeating-linear-gradient(to bottom,transparent 0px,transparent 32px,#b7c5ff 33px 33px,transparent 34px,transparent 52px,#b7c5ff 53px 53px,transparent 54px); overflow:auto; white-space:pre-wrap; font-family:"Comic Sans MS",Arial,sans-serif;}
+.copia span.erro { color: red; font-family:"Comic Sans MS",Arial,sans-serif; font-size:28px; line-height:54px; display:inline-block; white-space:pre-wrap; }
+button{margin-top:10px; font-size:18px; padding:12px 22px; border:none; border-radius:10px; background-color:#7c8cff; color:white; cursor:pointer;}
+button:hover{background-color:#6574e6;}
+button.vermelho{background-color:#e74c3c;}
+button.vermelho:hover{background-color:#c0392b;}
+.resultado-correcao{font-size:20px; font-weight:bold; margin-top:5px;}
+@media print{body{background:white;padding:0;} button{display:none;} .caderno{box-shadow:none;border-radius:0;width:100%;} .numero-pagina{display:none;}}
 </style>
 </head>
-
 <body>
 <div class="caderno">
-
-<h1>📘 Caderno Digital de Escrita</h1>
-
+<h1>📘 Caderno Digital de Cópia</h1>
 <label>Nome do aluno:</label>
 <input type="text" id="nome">
-
 <label>Data:</label>
 <input type="date" id="data">
-
 <div id="paginas"></div>
 
-<div style="margin-bottom:10px;">
-    <button onclick="paginaAnterior()">⬅ Página anterior</button>
-    <button onclick="novaPagina()">Nova página ➕</button>
-    <button onclick="paginaSeguinte()">➡ Página seguinte</button>
+<div style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+  <button onclick="paginaAnterior()">⬅ Página anterior</button>
+  <button onclick="novaPagina()">Nova página ➕</button>
+  <button onclick="paginaSeguinte()">➡ Página seguinte</button>
+  <button class="vermelho" onclick="corrigirPagina()">Corrigir ✔️</button>
 </div>
 
 <button onclick="guardarPDF()">Guardar em PDF 📄</button>
-
 </div>
 
 <script>
-let paginaAtual = 0;
-
-// CRIAR PÁGINA
-function criarPagina(num, valor) {
-    let container = document.getElementById("paginas");
-    let paginaContainer = document.createElement("div");
-    paginaContainer.className = "pagina-container";
-    paginaContainer.style.display = "none";
-
-    let numero = document.createElement("div");
-    numero.className = "numero-pagina";
-    numero.textContent = "Página " + num;
-
-    let t = document.createElement("textarea");
-    t.className = "pagina";
-    t.dataset.pagina = num;
-    t.value = valor;
-    t.placeholder = "Página "+num+" - O tapete é do Pepe e a mota é da Mimi.
+/* =====================================================
+   ======== TEXTO MODELO PARA OS ALUNOS ===========
+   ======= EDITAR AQUI: COLOCAR NOVAS FRASES OU TEXTO =====
+   =====================================================
+*/
+let frasesModelo = `O tapete é do Pepe e a mota é da Mimi.
 A lata é da tia Lili e a lupa é do pai.
 A mota é da mãe da Didi.
 O dedo do pai dói.
 A tia Bela dá o dado ao Tito.
-A Mila leva na mala o loto e a bola.
-";
+A Mila leva na mala o loto e a bola.`;
+
+let paginaAtual = 0;
+
+function criarPagina(num){
+    let container=document.getElementById("paginas");
+    let paginaContainer=document.createElement("div");
+    paginaContainer.className="pagina-container";
+    paginaContainer.style.display="none";
+
+    let numero=document.createElement("div");
+    numero.className="numero-pagina";
+    numero.textContent="Página "+num;
+
+    let modelo=document.createElement("div");
+    modelo.className="modelo";
+    modelo.textContent=frasesModelo;
+
+    let rotulo=document.createElement("div");
+    rotulo.className="rotulo-copia";
+    rotulo.textContent="Cópia:";
+
+    let copia=document.createElement("div");
+    copia.className="copia";
+    copia.contentEditable=true;
+    copia.dataset.pagina=num;
 
     paginaContainer.appendChild(numero);
-    paginaContainer.appendChild(t);
+    paginaContainer.appendChild(modelo);
+    paginaContainer.appendChild(rotulo);
+    paginaContainer.appendChild(copia);
+
+    let resultado=document.createElement("div");
+    resultado.className="resultado-correcao";
+    paginaContainer.appendChild(resultado);
+
     container.appendChild(paginaContainer);
 }
 
-// ADICIONAR LISTENER
-function adicionarListenerPaginas() {
-    document.querySelectorAll(".pagina").forEach(t=>{
-        t.oninput = salvar;
-    });
+function adicionarListenerPaginas(){
+    document.querySelectorAll(".copia").forEach(t=>{ t.oninput=salvar; });
 }
 
-// SALVAR AUTOMÁTICO
-function salvar() {
-    localStorage.setItem("nome", document.getElementById("nome").value);
-    localStorage.setItem("data", document.getElementById("data").value);
-
-    let textos = [];
-    document.querySelectorAll(".pagina").forEach(t=>{
-        textos.push(t.value);
-    });
-    localStorage.setItem("paginas", JSON.stringify(textos));
+function salvar(){
+    localStorage.setItem("nome",document.getElementById("nome").value);
+    localStorage.setItem("data",document.getElementById("data").value);
+    let textos=[];
+    document.querySelectorAll(".copia").forEach(t=>{ textos.push(t.innerText); });
+    localStorage.setItem("paginas",JSON.stringify(textos));
 }
 
-// NOVA PÁGINA
 function novaPagina(){
-    let num = document.querySelectorAll(".pagina").length + 1;
-    criarPagina(num, "");
+    let num=document.querySelectorAll(".copia").length+1;
+    criarPagina(num);
     adicionarListenerPaginas();
     salvar();
     mostrarPagina(num-1);
 }
 
-// MOSTRAR PÁGINA
 function mostrarPagina(num){
-    let todas = document.querySelectorAll(".pagina-container");
+    let todas=document.querySelectorAll(".pagina-container");
     if(num<0) num=0;
     if(num>=todas.length) num=todas.length-1;
-    paginaAtual = num;
+    paginaAtual=num;
+    todas.forEach((p,i)=>{ p.style.display=(i===num)?"block":"none"; });
+    todas[num].querySelector(".copia").focus();
+}
 
-    todas.forEach((p,i)=>{
-        p.style.display = (i===num) ? "block" : "none";
+function paginaAnterior(){ mostrarPagina(paginaAtual-1); }
+function paginaSeguinte(){ mostrarPagina(paginaAtual+1); }
+
+function corrigirPagina(){
+    let copia=document.querySelector(".pagina-container[style*='block']").querySelector(".copia");
+    let modelo=document.querySelector(".pagina-container[style*='block']").querySelector(".modelo").textContent.split("\n").map(l=>l.trim());
+    let aluno=copia.innerText.split("\n").map(l=>l.trim());
+
+    let resultadoTexto=[];
+    let corretas=0;
+
+    for(let i=0;i<modelo.length;i++){
+        let linhaAluno = aluno[i] || "";
+        if(linhaAluno.toLowerCase() === modelo[i].toLowerCase()){
+            resultadoTexto.push(linhaAluno);
+            corretas++;
+        } else if(linhaAluno !== ""){
+            resultadoTexto.push(`<span class="erro">${linhaAluno}</span>`);
+        } else {
+            resultadoTexto.push("");
+        }
+    }
+
+    copia.innerHTML = resultadoTexto.join("<br>");
+    copia.focus();
+    copia.scrollTop = copia.scrollHeight;
+    copia.parentNode.querySelector(".resultado-correcao").textContent=`Linhas corretas: ${corretas} de ${modelo.length}`;
+}
+
+window.onload=function(){
+    document.getElementById("nome").value=localStorage.getItem("nome")||"";
+    document.getElementById("data").value=localStorage.getItem("data")||"";
+
+    let paginas=JSON.parse(localStorage.getItem("paginas")||'[]');
+    if(paginas.length===0) criarPagina(1);
+    else paginas.forEach((texto,i)=>{
+        criarPagina(i+1);
+        document.querySelectorAll(".copia")[i].innerText = texto;
     });
-    todas[num].querySelector("textarea").focus();
-}
-
-// PÁGINA ANTERIOR
-function paginaAnterior(){
-    mostrarPagina(paginaAtual-1);
-}
-
-// PÁGINA SEGUINTE
-function paginaSeguinte(){
-    mostrarPagina(paginaAtual+1);
-}
-
-// CARREGAR DADOS
-window.onload = function(){
-    document.getElementById("nome").value = localStorage.getItem("nome") || "";
-    document.getElementById("data").value = localStorage.getItem("data") || "";
-
-    let paginas = JSON.parse(localStorage.getItem("paginas") || '[]');
-    if(paginas.length === 0) criarPagina(1,"");
-    else paginas.forEach((texto,i)=> criarPagina(i+1,texto));
 
     adicionarListenerPaginas();
     mostrarPagina(0);
 }
 
-// PDF
 function guardarPDF(){ window.print(); }
 </script>
 </body>
