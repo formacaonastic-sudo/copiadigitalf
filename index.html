@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Caderno Digital de Escrita</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: "Comic Sans MS", Arial, sans-serif;
+    background: linear-gradient(180deg,#eef3ff,#f8faff);
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+
+.caderno {
+    background: white;
+    width: 850px;
+    padding: 35px 45px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+h1 { text-align: center; color: #444; margin-bottom: 25px; }
+label { font-size: 20px; }
+
+input {
+    width: 100%;
+    font-size: 20px;
+    padding: 10px;
+    margin: 8px 0 20px 0;
+    border-radius: 8px;
+    border: 2px solid #d6dcff;
+    box-sizing: border-box;
+}
+
+.pagina-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.pagina-container .numero-pagina {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    font-size: 16px;
+    color: #777;
+}
+
+/* AREA DE ESCRITA */
+textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: 420px;
+    font-size: 28px;       /* LETRA GRANDE */
+    line-height: 54px;     /* LINHA AJUSTADA PARA ENCAIXAR */
+    padding: 12px 15px 12px 60px; /* margem esquerda */
+    border-radius: 10px;
+    border: 2px solid #e1e6ff;
+    outline: none;
+    resize: none;
+    margin-bottom: 20px;
+
+    /* LINHAS DUPLAS + PONTILHADO AJUSTADAS PARA FONT 28px */
+    background-image:
+        /* margem vermelha portuguesa */
+        linear-gradient(to right, transparent 55px, #ff6b6b 56px, transparent 57px),
+
+        /* linhas duplas horizontais */
+        repeating-linear-gradient(
+            to bottom,
+            white 0px,
+            white 32px,
+            #b7c5ff 32px,
+            white 34px,
+            white 52px,
+            #b7c5ff 52px,
+            white 54px
+        ),
+
+        /* pontilhado no meio */
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 32px,
+            #b7c5ff 33px 33px,
+            transparent 34px,
+            transparent 52px,
+            #b7c5ff 53px 53px,
+            transparent 54px
+        );
+}
+
+textarea:focus { border-color: #9aa8ff; }
+
+button {
+    margin-top: 10px;
+    font-size: 18px;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 10px;
+    background-color: #7c8cff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover { background-color: #6574e6; }
+
+@media print {
+    body { background: white; padding: 0; }
+    button { display: none; }
+    .caderno { box-shadow: none; border-radius: 0; width: 100%; }
+    .numero-pagina { display: none; }
+}
+</style>
+</head>
+
+<body>
+<div class="caderno">
+
+<h1>📘 Caderno Digital de Escrita</h1>
+
+<label>Nome do aluno:</label>
+<input type="text" id="nome">
+
+<label>Data:</label>
+<input type="date" id="data">
+
+<div id="paginas"></div>
+
+<div style="margin-bottom:10px;">
+    <button onclick="paginaAnterior()">⬅ Página anterior</button>
+    <button onclick="novaPagina()">Nova página ➕</button>
+    <button onclick="paginaSeguinte()">➡ Página seguinte</button>
+</div>
+
+<button onclick="guardarPDF()">Guardar em PDF 📄</button>
+
+</div>
+
+<script>
+let paginaAtual = 0;
+
+// CRIAR PÁGINA
+function criarPagina(num, valor) {
+    let container = document.getElementById("paginas");
+    let paginaContainer = document.createElement("div");
+    paginaContainer.className = "pagina-container";
+    paginaContainer.style.display = "none";
+
+    let numero = document.createElement("div");
+    numero.className = "numero-pagina";
+    numero.textContent = "Página " + num;
+
+    let t = document.createElement("textarea");
+    t.className = "pagina";
+    t.dataset.pagina = num;
+    t.value = valor;
+    t.placeholder = "Página "+num+" - O tapete é do Pepe e a mota é da Mimi.
+A lata é da tia Lili e a lupa é do pai.
+A mota é da mãe da Didi.
+O dedo do pai dói.
+A tia Bela dá o dado ao Tito.
+A Mila leva na mala o loto e a bola.
+";
+
+    paginaContainer.appendChild(numero);
+    paginaContainer.appendChild(t);
+    container.appendChild(paginaContainer);
+}
+
+// ADICIONAR LISTENER
+function adicionarListenerPaginas() {
+    document.querySelectorAll(".pagina").forEach(t=>{
+        t.oninput = salvar;
+    });
+}
+
+// SALVAR AUTOMÁTICO
+function salvar() {
+    localStorage.setItem("nome", document.getElementById("nome").value);
+    localStorage.setItem("data", document.getElementById("data").value);
+
+    let textos = [];
+    document.querySelectorAll(".pagina").forEach(t=>{
+        textos.push(t.value);
+    });
+    localStorage.setItem("paginas", JSON.stringify(textos));
+}
+
+// NOVA PÁGINA
+function novaPagina(){
+    let num = document.querySelectorAll(".pagina").length + 1;
+    criarPagina(num, "");
+    adicionarListenerPaginas();
+    salvar();
+    mostrarPagina(num-1);
+}
+
+// MOSTRAR PÁGINA
+function mostrarPagina(num){
+    let todas = document.querySelectorAll(".pagina-container");
+    if(num<0) num=0;
+    if(num>=todas.length) num=todas.length-1;
+    paginaAtual = num;
+
+    todas.forEach((p,i)=>{
+        p.style.display = (i===num) ? "block" : "none";
+    });
+    todas[num].querySelector("textarea").focus();
+}
+
+// PÁGINA ANTERIOR
+function paginaAnterior(){
+    mostrarPagina(paginaAtual-1);
+}
+
+// PÁGINA SEGUINTE
+function paginaSeguinte(){
+    mostrarPagina(paginaAtual+1);
+}
+
+// CARREGAR DADOS
+window.onload = function(){
+    document.getElementById("nome").value = localStorage.getItem("nome") || "";
+    document.getElementById("data").value = localStorage.getItem("data") || "";
+
+    let paginas = JSON.parse(localStorage.getItem("paginas") || '[]');
+    if(paginas.length === 0) criarPagina(1,"");
+    else paginas.forEach((texto,i)=> criarPagina(i+1,texto));
+
+    adicionarListenerPaginas();
+    mostrarPagina(0);
+}
+
+// PDF
+function guardarPDF(){ window.print(); }
+</script>
+</body>
+</html>
